@@ -1,0 +1,6 @@
+requests
+beautifulsoup4
+ipykernel
+numpy
+sentence-transformers
+rank_bm25

@@ -1,0 +1,14 @@
+.venv/
+.ipynb_checkpoints/
+__pycache__/
+.env
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+data/processed/*.json
+data/processed/embeddings/
+.DS_Store
+.cache/
+/_previous_pipeline/
