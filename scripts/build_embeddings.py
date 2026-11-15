@@ -19,6 +19,7 @@ from angebotfinder.embeddings import (
     do_embedding,
     save_chunks_embeddings,
 )
+from angebotfinder.models import MODEL_CACHE
 
 
 def main():
@@ -28,7 +29,7 @@ def main():
     if not chunks:
         raise ValueError("No offer chunks to embed.")
 
-    model = SentenceTransformer(MODEL_NAME)
+    model = SentenceTransformer(MODEL_NAME, cache_folder=str(MODEL_CACHE))
     embeddings = do_embedding(chunks, model)
     save_chunks_embeddings(chunks, embeddings, OUTPUT_DIR, MODEL_NAME)
 
