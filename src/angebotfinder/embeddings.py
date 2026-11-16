@@ -2,14 +2,6 @@ import json
 import numpy as np
 
 
-def load_files(data_path):
-    with data_path.open(encoding="utf-8") as f:
-        data = json.load(f)
-
-    offers = data["offers"]
-    return offers
-
-
 def prepare_documents(offers):
     documents = []
 

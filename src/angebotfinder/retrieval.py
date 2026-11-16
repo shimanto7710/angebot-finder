@@ -7,13 +7,14 @@ from time import perf_counter
 import numpy as np
 from rank_bm25 import BM25Okapi
 
+from .database.offers import fetch_all_offers
+
 
 def load_retrieval_data(project_root):
     processed_dir = project_root / "data" / "processed"
     embedding_dir = processed_dir / "embeddings"
 
-    with (processed_dir / "offers_dataset.json").open(encoding="utf-8") as f:
-        data = json.load(f)
+    offers = fetch_all_offers()
 
     with (embedding_dir / "chunks.json").open(encoding="utf-8") as f:
         chunks = json.load(f)
@@ -35,7 +36,7 @@ def load_retrieval_data(project_root):
 
     eligible_ids = {
         offer["record_id"]
-        for offer in data["offers"]
+        for offer in offers
         if offer.get("is_searchable") is not False
     }
     indices = [
@@ -46,7 +47,7 @@ def load_retrieval_data(project_root):
     embeddings = embeddings[indices]
     config["chunk_count"] = len(chunks)
 
-    return data["offers"], chunks, config, embeddings
+    return offers, chunks, config, embeddings
 
 
 def tokenize(text):

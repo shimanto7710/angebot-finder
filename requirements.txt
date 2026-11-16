@@ -6,3 +6,6 @@ sentence-transformers
 rank_bm25
 torch
 transformers
+psycopg[binary]
+python-dotenv
+aiosql>=16.2,<17
