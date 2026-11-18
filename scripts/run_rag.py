@@ -1,12 +1,14 @@
 """Run one question through the offer assistant."""
 
 import sys
+from functools import partial
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from angebotfinder.models import load_models
+from angebotfinder.database.embeddings import search_chunk_ids
 from angebotfinder.rag_pipeline import RAGPipeline
 from angebotfinder.retrieval import load_retrieval_data
 
@@ -18,7 +20,7 @@ LOCAL_FILES_ONLY = True  # Set False when downloading models for the first time.
 
 def main():
     print("Loading saved offers...", flush=True)
-    offers, chunks, config, embeddings = load_retrieval_data(PROJECT_ROOT)
+    offers, chunks, config, embeddings = load_retrieval_data()
     embedding_model, reranker_model, generator_model, generator_tokenizer = load_models(
         config["embedding_model"], local_files_only=LOCAL_FILES_ONLY
     )
@@ -32,6 +34,7 @@ def main():
         generator_tokenizer,
         use_rewriting=USE_REWRITING,
         min_score=MIN_RERANK_SCORE,
+        semantic_search=partial(search_chunk_ids, model_name=config["embedding_model"]),
     )
 
     print("Running the RAG pipeline...", flush=True)

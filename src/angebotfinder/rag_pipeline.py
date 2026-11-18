@@ -20,6 +20,7 @@ class RAGPipeline:
         *,
         use_rewriting=False,
         min_score=None,
+        semantic_search=None,
     ):
         self.embeddings = embeddings
         self.chunks = chunks
@@ -30,6 +31,7 @@ class RAGPipeline:
         self.generator_tokenizer = generator_tokenizer
         self.use_rewriting = use_rewriting
         self.min_score = min_score
+        self.semantic_search = semantic_search
 
     def ask_question(
         self,
@@ -70,6 +72,7 @@ class RAGPipeline:
             embedding_model=self.embedding_model,
             reranker=self.reranker_model,
             bm25=self.bm25,
+            semantic_search=self.semantic_search,
         )
         if self.min_score is not None:
             ranked_results = [

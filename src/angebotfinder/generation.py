@@ -51,7 +51,7 @@ def build_messages(evidence, history=None):
         history = evidence.get("history", [])
 
     history_text = "\n\n".join(
-        f"Previous question: {turn['question']}"
+        f"Previous question: {turn['question']}\nPrevious answer: {turn.get('answer', '')}"
         for turn in history[-3:]
     )
 
@@ -84,7 +84,7 @@ A relevance score does not verify an offer. Source URLs may belong to aggregator
         {
             "role": "user",
             "content": (
-                f"Previous user questions:\n{history_text or '(none)'}\n\n"
+                f"Conversation history:\n{history_text or '(none)'}\n\n"
                 f"Question:\n{evidence['question']}\n\n"
                 f"Offer evidence:\n{evidence['context'] or '(no offers supplied)'}"
             ),

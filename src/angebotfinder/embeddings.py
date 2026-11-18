@@ -1,7 +1,3 @@
-import json
-import numpy as np
-
-
 def prepare_documents(offers):
     documents = []
 
@@ -98,34 +94,3 @@ def do_embedding(chunks, model):
         chunk["embedding"] = embedding
 
     return embeddings
-
-
-def save_chunks_embeddings(chunks, embeddings, output_dir, model_name):
-    if embeddings.ndim != 2 or len(chunks) != embeddings.shape[0]:
-        raise ValueError("Each chunk must have one embedding row.")
-
-    saved_chunks = [
-        {key: value for key, value in chunk.items() if key != "embedding"}
-        for chunk in chunks
-    ]
-
-    config = {
-        "embedding_model": model_name,
-        "normalized": True,  # Matches normalize_embeddings=True in do_embedding()
-        "chunk_count": len(saved_chunks),
-        "embedding_dimension": int(embeddings.shape[1]),
-    }
-
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    (output_dir / "chunks.json").write_text(
-        json.dumps(saved_chunks, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
-    np.save(output_dir / "embeddings.npy", embeddings, allow_pickle=False)
-    (output_dir / "config.json").write_text(
-        json.dumps(config, indent=2),
-        encoding="utf-8",
-    )
-
-    print(f"Saved {len(saved_chunks)} chunks and embeddings to {output_dir}")

@@ -55,3 +55,34 @@ ON CONFLICT (record_id) DO UPDATE SET
     fetched_at = EXCLUDED.fetched_at,
     is_searchable = EXCLUDED.is_searchable,
     offer_data = EXCLUDED.offer_data;
+
+-- name: filtered_offers
+SELECT record_id, product_name, brand, variant, category, store, pack_size_text,
+       offer_price, currency, requires_loyalty, source_url, offer_data
+FROM offers
+WHERE (:include_unsearchable OR is_searchable IS NOT FALSE)
+  AND (CAST(:search AS TEXT) IS NULL OR strpos(
+      lower(concat_ws(' ', product_name, brand, variant)), lower(CAST(:search AS TEXT))
+  ) > 0)
+  AND (CAST(:store AS TEXT) IS NULL OR lower(store) = lower(CAST(:store AS TEXT)))
+  AND (CAST(:brand AS TEXT) IS NULL OR lower(brand) = lower(CAST(:brand AS TEXT)))
+  AND (CAST(:category AS TEXT) IS NULL OR lower(category) = lower(CAST(:category AS TEXT)))
+  AND (CAST(:min_price AS NUMERIC) IS NULL OR offer_price >= CAST(:min_price AS NUMERIC))
+  AND (CAST(:max_price AS NUMERIC) IS NULL OR offer_price <= CAST(:max_price AS NUMERIC))
+  AND (CAST(:requires_loyalty AS BOOLEAN) IS NULL OR requires_loyalty = CAST(:requires_loyalty AS BOOLEAN))
+ORDER BY lower(product_name), record_id
+LIMIT :limit OFFSET :offset;
+
+-- name: filtered_offers_count
+SELECT COUNT(*) AS total
+FROM offers
+WHERE (:include_unsearchable OR is_searchable IS NOT FALSE)
+  AND (CAST(:search AS TEXT) IS NULL OR strpos(
+      lower(concat_ws(' ', product_name, brand, variant)), lower(CAST(:search AS TEXT))
+  ) > 0)
+  AND (CAST(:store AS TEXT) IS NULL OR lower(store) = lower(CAST(:store AS TEXT)))
+  AND (CAST(:brand AS TEXT) IS NULL OR lower(brand) = lower(CAST(:brand AS TEXT)))
+  AND (CAST(:category AS TEXT) IS NULL OR lower(category) = lower(CAST(:category AS TEXT)))
+  AND (CAST(:min_price AS NUMERIC) IS NULL OR offer_price >= CAST(:min_price AS NUMERIC))
+  AND (CAST(:max_price AS NUMERIC) IS NULL OR offer_price <= CAST(:max_price AS NUMERIC))
+  AND (CAST(:requires_loyalty AS BOOLEAN) IS NULL OR requires_loyalty = CAST(:requires_loyalty AS BOOLEAN));

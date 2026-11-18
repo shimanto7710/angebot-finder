@@ -50,6 +50,24 @@ def fetch_offers_by_store(store):
         return list(queries.offers_by_store(connection, store=store))
 
 
+def list_offers(
+    *, search=None, store=None, brand=None, category=None,
+    min_price=None, max_price=None, requires_loyalty=None,
+    include_unsearchable=False, limit=20, offset=0,
+):
+    filters = {
+        "search": search, "store": store, "brand": brand, "category": category,
+        "min_price": min_price, "max_price": max_price,
+        "requires_loyalty": requires_loyalty,
+        "include_unsearchable": include_unsearchable,
+    }
+    with get_connection() as connection:
+        connection.row_factory = dict_row
+        items = list(queries.filtered_offers(connection, **filters, limit=limit, offset=offset))
+        total = next(queries.filtered_offers_count(connection, **filters))["total"]
+    return {"items": items, "total": total, "limit": limit, "offset": offset}
+
+
 def save_offers(offers, deactivate_missing=False):
     if deactivate_missing and not offers:
         raise ValueError("Cannot replace the searchable collection with no offers.")

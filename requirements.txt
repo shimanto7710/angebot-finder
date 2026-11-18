@@ -9,3 +9,9 @@ transformers
 psycopg[binary]
 python-dotenv
 aiosql>=16.2,<17
+fastapi
+uvicorn[standard]
+pydantic[email]
+pwdlib[argon2]
+PyJWT>=2.10,<3
+pgvector>=0.5.1,<1

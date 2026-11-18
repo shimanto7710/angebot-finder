@@ -544,7 +544,7 @@ def extract_aldi_sued(soup, page):
 def extract_kaufland(soup, page):
     records = []
     for tile in soup.select(".k-product-tile"):
-        # Multi-buy prices require a dedicated quantity model in a later lesson.
+        # Multi-buy offers cannot be compared as single-pack prices.
         if tile.select_one(".k-price-tag__bby-message"):
             continue
         name = " ".join(filter(None, [text_of(tile, ".k-product-tile__title"),
@@ -748,7 +748,7 @@ def extract_page(page):
 # Refresh the dataset
 
 def refresh_all_offers_json(enabled=False, output_path=DEFAULT_DATA_PATH, pause_seconds=2):
-    """Fetch configured pages, extract candidates, and save one dataset. No browser control.
+    """Fetch configured pages and save extracted offer candidates.
 
     Per-source failures are included in the output; old offers from failed sources
     are not silently copied forward as fresh. If every source fails, the previous
@@ -810,7 +810,7 @@ def refresh_all_offers_json(enabled=False, output_path=DEFAULT_DATA_PATH, pause_
 # Optional import of a locally saved REWE page
 
 def export_rewe_saved_html(html_path, output_path=PROJECT_ROOT / "data" / "processed" / "rewe_saved_offers.json", observed_at=None):
-    """Read your saved HTML and export JSON. No HTTP requests or browser control."""
+    """Extract REWE offers from a saved HTML page."""
     if observed_at is not None:
         timestamp = datetime.fromisoformat(observed_at.replace("Z", "+00:00"))
         if timestamp.tzinfo is None:

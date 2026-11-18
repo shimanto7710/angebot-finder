@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "angebotfinder-de"
 version = "0.1.0"
-description = "German supermarket offer collection"
+description = "German supermarket offer search with hybrid retrieval and chat"
 readme = "README.md"
 requires-python = ">=3.11"
 dynamic = ["dependencies"]

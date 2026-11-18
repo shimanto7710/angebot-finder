@@ -80,6 +80,18 @@ class RetrievalTests(unittest.TestCase):
         )
         self.assertEqual(len(result["hybrid_ranking"]), 0)
 
+    def test_database_ranking_maps_chunk_ids_to_loaded_chunks(self):
+        for index, chunk in enumerate(self.chunks):
+            chunk["chunk_id"] = str(index)
+        callback = unittest.mock.Mock(return_value=["2", "not-loaded", "0"])
+        rankings = hybrid_search(
+            "Haribo", self.embeddings, document_chunks=self.chunks,
+            embedding_model=FakeEmbeddingModel(), bm25=build_bm25(self.chunks),
+            semantic_search=callback,
+        )
+        np.testing.assert_array_equal(rankings["semantic_ranking"], [2, 0])
+        callback.assert_called_once()
+
 
 if __name__ == "__main__":
     unittest.main()

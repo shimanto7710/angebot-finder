@@ -1,1 +1,1 @@
-"""AngebotFinder DE application package. Working experiments currently live in notebooks."""
+"""German supermarket offer search and chat."""

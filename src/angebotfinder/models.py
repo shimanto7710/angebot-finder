@@ -11,8 +11,12 @@ GENERATION_MODEL = "Qwen/Qwen2.5-1.5B-Instruct"
 MODEL_CACHE = Path(__file__).resolve().parents[2] / ".cache" / "huggingface" / "hub"
 
 
-def load_models(embedding_model_name, reranker_model_name=RERANKER_MODEL,
-                generation_model_name=GENERATION_MODEL, local_files_only=False):
+def load_models(
+    embedding_model_name,
+    reranker_model_name=RERANKER_MODEL,
+    generation_model_name=GENERATION_MODEL,
+    local_files_only=False,
+):
     print("Loading embedding model...", flush=True)
     embedding_model = SentenceTransformer(
         embedding_model_name, cache_folder=str(MODEL_CACHE),

@@ -18,7 +18,7 @@ def refresh_data(enabled=False, allow_partial=False):
     if not isinstance(enabled, bool) or not isinstance(allow_partial, bool):
         raise ValueError("Refresh flags must be True or False.")
     if not enabled:
-        print("Refresh disabled. Set FETCH_DATA = True when ready.")
+        print("Refresh disabled. Set FETCH_DATA = True to run.")
         return
 
     from scripts.import_offers import import_offers
@@ -36,7 +36,7 @@ def refresh_data(enabled=False, allow_partial=False):
 
     print("Step 3: Build embeddings from PostgreSQL offers.", flush=True)
     build_offer_embeddings()
-    print("Done. You can now run: python scripts/run_rag.py")
+    print("Refresh complete. Restart the API to reload retrieval data.")
 
 
 def fetch_offers(json_path, allow_partial=False):

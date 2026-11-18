@@ -20,9 +20,13 @@ def run_sql(sql_path):
     print(f"Successfully executed: {sql_path.name}")
 
 
-def main():
+def setup_database():
     sql_path = PROJECT_ROOT / "sql" / "schema.sql"
     run_sql(sql_path)
+
+
+def main():
+    setup_database()
 
 
 if __name__ == "__main__":

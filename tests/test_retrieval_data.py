@@ -1,8 +1,6 @@
 """Check database eligibility against saved chunks and vectors."""
 
-import json
 import sys
-import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -27,21 +25,11 @@ class RetrievalDataTests(unittest.TestCase):
         ]
         vectors = np.arange(8).reshape(4, 2)
 
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            output = root / "data" / "processed" / "embeddings"
-            output.mkdir(parents=True)
-            (output / "chunks.json").write_text(json.dumps(chunks))
-            (output / "config.json").write_text(json.dumps({
-                "chunk_count": 4, "embedding_dimension": 2,
-            }))
-            np.save(output / "embeddings.npy", vectors)
-
-            # There is deliberately no offers_dataset.json in this directory.
-            with patch(
-                "angebotfinder.retrieval.fetch_all_offers", return_value=offers
-            ):
-                loaded, selected, config, embeddings = load_retrieval_data(root)
+        config = {"chunk_count": 4, "embedding_dimension": 2}
+        with patch("angebotfinder.retrieval.fetch_all_offers", return_value=offers), patch(
+            "angebotfinder.retrieval.load_offer_chunks", return_value=(chunks, config, vectors)
+        ):
+            loaded, selected, config, embeddings = load_retrieval_data()
 
         self.assertEqual(loaded, offers)
         self.assertEqual(selected, [chunks[1], chunks[3]])
